@@ -7,18 +7,30 @@ public class exp101 implements ActionListener {
 	JFrame frame;
 	JPanel pnl,pnl1,pnl2;
 	CardLayout cardLO;
+	JLabel score;
+	JButton replay;
+	JButton exit;
+	int scoreCtr;
 	JButton [] btn=new JButton[16];
+	String gameOver="123456789101112131415";
 	public final int n=4;
 	int [] indexArray=new int[15];
 	exp101() {
-		frame=new JFrame("Base");
+		frame=new JFrame("4x4 Number Puzzle");
 		pnl=new JPanel();
 		pnl2=new JPanel();
 		pnl1=new JPanel();
+		score=new JLabel("");
 		cardLO=new CardLayout();
+		replay=new JButton("Play again");
+		exit=new JButton("Exit");
+		scoreCtr=0;
 		pnl1.setLayout(new GridLayout(n,n));
 		pnl.setLayout(cardLO);
 		pnl1.setFont(new Font("TimesNewRoman",Font.BOLD,24));
+		pnl2.add(score);
+		pnl2.add(replay);
+		pnl2.add(exit);
 		frame.setSize(400, 400);
 		resetIndexArray();
 		int k=0,index=16;
@@ -32,13 +44,14 @@ public class exp101 implements ActionListener {
 				index--;
 			}
 		}
-		btn[15]=new JButton("Demo");
+		btn[15]=new JButton();
 		pnl1.add(btn[15]);
 		btn[15].setVisible(false);
 		pnl.add(pnl1,"Buttons");
 		pnl.add(pnl2,"GameOver");
 		frame.add(pnl);
 		cardLO.show(pnl,"Buttons");
+		addButtonListener();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
@@ -53,13 +66,38 @@ public class exp101 implements ActionListener {
 	public void addButtonListener() {
 		for(int i=0;i<btn.length;i++) {
 			btn[i].addActionListener(this);
+			replay.addActionListener(this);
+			exit.addActionListener(this);
 		}
 	}
 	public void actionPerformed(ActionEvent ae) {
-		//System.out.println("Action Source: "+ae.getSource());
 		JButton b=(JButton) ae.getSource();
-
+		if(b==replay){
+			try{
+				SwingUtilities.invokeAndWait(()->new exp101());
+				System.exit(0);
+			}catch(Exception e) {}
+		}
+		if(b==exit){
+			System.exit(0);
+		}
+		scoreCtr++;
 		swapButtons(b);
+		if(checkGameOver()){
+			btn[15].setText(""+16);
+			score.setText(""+scoreCtr);
+			cardLO.show(pnl, "GameOver");
+		}
+	}
+	public boolean checkGameOver() {
+		String str="";
+		for(int i=0;i<btn.length;i++){
+			if(btn[i].isVisible())
+				str+=btn[i].getText();
+		}
+		if(str.compareTo(gameOver)==0)
+			return true;
+		else return false;
 	}
 	public void swapButtons(JButton b) {
 		int index=getIndex(b);
@@ -93,7 +131,6 @@ public class exp101 implements ActionListener {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				exp101 ob=new exp101();
-				ob.addButtonListener();
 			}
 		});
 	}
