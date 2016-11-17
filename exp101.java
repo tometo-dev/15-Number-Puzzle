@@ -3,7 +3,7 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
-public class exp101 {
+public class exp101 implements ActionListener {
 	JFrame frame;
 	JPanel pnl,pnl1,pnl2;
 	CardLayout cardLO;
@@ -38,9 +38,44 @@ public class exp101 {
 		pnl.add(pnl1,"Buttons");
 		pnl.add(pnl2,"GameOver");
 		frame.add(pnl);
-		cardLO.show(pnl,"GameOver");
+		cardLO.show(pnl,"Buttons");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+	}
+	public int getIndex(JButton b) {
+		int index=0;
+		for(int i=0;i<16;i++) {
+			if(btn[i]==b)
+				index=i;
+		}
+		return index;
+	}
+	public void addButtonListener() {
+		for(int i=0;i<btn.length;i++) {
+			btn[i].addActionListener(this);
+		}
+	}
+	public void actionPerformed(ActionEvent ae) {
+		//System.out.println("Action Source: "+ae.getSource());
+		JButton b=(JButton) ae.getSource();
+
+		swapButtons(b);
+	}
+	public void swapButtons(JButton b) {
+		int index=getIndex(b);
+		int []arr={index-n,index+n,index-1,index+1};
+		for(int i=0;i<arr.length;i++){
+			try{
+				if(btn[arr[i]].isVisible()==false){
+					String n=b.getText();
+					b.setVisible(false);
+					btn[arr[i]].setText(n);
+					btn[arr[i]].setVisible(true);
+				}
+			}catch(ArrayIndexOutOfBoundsException e){
+				continue;
+			}
+		}
 	}
 	private void resetIndexArray() {
 		for(int i=0;i<indexArray.length;i++)
@@ -57,7 +92,8 @@ public class exp101 {
 	public static void main(String[]args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new exp101();
+				exp101 ob=new exp101();
+				ob.addButtonListener();
 			}
 		});
 	}
