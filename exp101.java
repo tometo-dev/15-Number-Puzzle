@@ -37,8 +37,19 @@ public class exp101 implements ActionListener {
 		btnPanel.add(replay);
 		btnPanel.add(exit);
 		pnl2.add(btnPanel);
+		replay.setVisible(true);
 		frame.setSize(400, 400);
 		resetIndexArray();
+		setButtons();
+		pnl.add(pnl1,"Buttons");
+		pnl.add(pnl2,"GameOver");
+		frame.add(pnl);
+		cardLO.show(pnl,"Buttons");
+		addButtonListener();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
+	public void setButtons() {
 		int k=0,index=16;
 		for(int i=0;i<n;i++){
 			for(int j=0;j<n;j++){
@@ -53,13 +64,6 @@ public class exp101 implements ActionListener {
 		btn[15]=new JButton();
 		pnl1.add(btn[15]);
 		btn[15].setVisible(false);
-		pnl.add(pnl1,"Buttons");
-		pnl.add(pnl2,"GameOver");
-		frame.add(pnl);
-		cardLO.show(pnl,"Buttons");
-		addButtonListener();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
 	}
 	public int getIndex(JButton b) {
 		int index=0;
@@ -79,10 +83,12 @@ public class exp101 implements ActionListener {
 	public void actionPerformed(ActionEvent ae) {
 		JButton b=(JButton) ae.getSource();
 		if(b==replay){
-			try{
-				SwingUtilities.invokeAndWait(()->new exp101());
-				System.exit(0);
-			}catch(Exception e) {}
+			pnl1.removeAll();
+			resetIndexArray();
+			setButtons();
+			addButtonListener();
+			scoreCtr=0;
+			cardLO.show(pnl, "Buttons");
 		}
 		if(b==exit){
 			System.exit(0);
@@ -136,7 +142,7 @@ public class exp101 implements ActionListener {
 	public static void main(String[]args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				exp101 ob=new exp101();
+				new exp101();
 			}
 		});
 	}
